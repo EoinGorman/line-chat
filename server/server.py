@@ -22,7 +22,10 @@ def user():
 
 @app.route('/login')
 def login():
-    return 'logged in'
+    params = json.loads(request.get_data().decode("utf-8"))
+    user_manager = UserManager(params["username"], params["password"])
+    message = user_manager.login()
+    return message
 
 @app.route('/send_message',  methods = ['POST'])
 def send_message():
