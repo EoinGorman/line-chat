@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 # relative modules
 sys.path.append(os.path.join(sys.path[0], '../', 'common'))
 import constants
+import lib.user_manager as um
 
 app = Flask(__name__)
 
@@ -14,7 +15,9 @@ def hello_world():
 
 @app.route('/user', methods = ['PUT'])
 def user():
-    return 'registered'
+    params = 
+    user_manager = um.UserManager()
+    message = user_manager.add_user()
 
 @app.route('/login')
 def login():
