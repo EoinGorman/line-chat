@@ -1,4 +1,4 @@
-import db_util
+import lib.db_util as db_util
 
 class UserManager:
     def __init__(self, username, password):

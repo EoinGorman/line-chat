@@ -1,3 +1,4 @@
+import json
 import requests
 import sys, os
 from flask import Flask, jsonify, request
@@ -15,9 +16,10 @@ def hello_world():
 
 @app.route('/user', methods = ['PUT'])
 def user():
-    params = 
-    user_manager = um.UserManager()
+    params = json.loads(request.get_data().decode("utf-8"))
+    user_manager = um.UserManager(params["username"], params["password"])
     message = user_manager.add_user()
+    return message
 
 @app.route('/login')
 def login():

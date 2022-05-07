@@ -6,7 +6,7 @@ class DbUtil:
         self.conn = self.connect()
         self.cur = self.conn.cursor()
 
-    def config(self, filename='database.ini', section='postgresql'):
+    def config(self, filename='./lib/database.ini', section='postgresql'):
         parser = ConfigParser()
         parser.read(filename)
         db = {}
