@@ -1,5 +1,6 @@
-import psycopg2
 from configparser import ConfigParser
+
+import psycopg2
 
 class DbUtil:
     def __init__(self):

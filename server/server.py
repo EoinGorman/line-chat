@@ -1,12 +1,11 @@
 import json
 import requests
 import sys, os
+
 from flask import Flask, jsonify, request
 
-# relative modules
-sys.path.append(os.path.join(sys.path[0], '../', 'common'))
-import constants
-import lib.user_manager as um
+import lib.constants as constants
+from lib.user_manager import UserManager
 
 app = Flask(__name__)
 
@@ -17,7 +16,7 @@ def hello_world():
 @app.route('/user', methods = ['PUT'])
 def user():
     params = json.loads(request.get_data().decode("utf-8"))
-    user_manager = um.UserManager(params["username"], params["password"])
+    user_manager = UserManager(params["username"], params["password"])
     message = user_manager.add_user()
     return message
 

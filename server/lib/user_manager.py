@@ -1,10 +1,10 @@
-import lib.db_util as db_util
+from .db_util import DbUtil
 
 class UserManager:
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.db = db_util.DbUtil()
+        self.db = DbUtil()
 
     def add_user(self):
         message = ''
