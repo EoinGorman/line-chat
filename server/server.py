@@ -2,7 +2,7 @@ import json
 import requests
 import sys, os
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 import lib.constants as constants
 from lib.user_manager import UserManager
@@ -13,19 +13,20 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello world!'
 
-@app.route('/user', methods = ['PUT'])
+@app.route('/user', methods = ['PUT', 'POST'])
 def user():
     params = json.loads(request.get_data().decode("utf-8"))
     user_manager = UserManager(params["username"], params["password"])
-    message = user_manager.add_user()
-    return message
+    if request.method == 'PUT':
+        success, message = user_manager.add_user()
+    else:
+        success, message = user_manager.login()
 
-@app.route('/login')
-def login():
-    params = json.loads(request.get_data().decode("utf-8"))
-    user_manager = UserManager(params["username"], params["password"])
-    message = user_manager.login()
-    return message
+    if success:
+        message = user_manager.id()
+        return Response(f"{message}", status=200)
+    else:
+        return Response(f"{message}", status=400)
 
 @app.route('/send_message',  methods = ['POST'])
 def send_message():
