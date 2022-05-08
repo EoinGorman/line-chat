@@ -12,18 +12,22 @@ class UserManager:
             message = f'User {self.username} already exists'
         else:
             self.db.insert_user(self.username, self.password)
-            message = 'User added.'
+            rows = self.db.select_user(self.username)
+            message = str(rows[0][0]) # return user_id
         self.db.close()
         return message
 
     def login(self):
+        message = ''
         rows = self.db.select_user(self.username)
         if rows == []:
-            return 'User does not exist'
+            message = 'User does not exist'
         elif rows[0][2] == self.password:
-            return 'Login successful'
+            message = str(rows[0][0]) # return user_id
         else:
-            return 'Incorrect password'
+            message = 'Incorrect password'
+        self.db.close()
+        return message
 
     def user_exists(self):
         rows = self.db.select_user(self.username)
