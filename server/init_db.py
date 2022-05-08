@@ -3,14 +3,36 @@ import lib.db_util as db_util
 
 def init_db():
     db = db_util.DbUtil()
-    db.execute(
+    commands = [
         """
         CREATE TABLE IF NOT EXISTS users (
-            user_id serial PRIMARY KEY,
+            id serial PRIMARY KEY,
             username VARCHAR(20) UNIQUE NOT NULL,
-            password VARCHAR(50) UNIQUE NOT NULL,
+            password VARCHAR(50) NOT NULL,
             created_at TIMESTAMP NOT NULL)
-        """)
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS conversations (
+            id serial PRIMARY KEY,
+            name VARCHAR(20) NOT NULL,
+            created_at TIMESTAMP NOT NULL)
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS conversation_users (
+            conversation_id INT NOT NULL,
+            user_id INT NOT NULL,
+            last_accessed_at TIMESTAMP NOT NULL,
+            CONSTRAINT fk_conversation_id
+            FOREIGN KEY (conversation_id)
+            REFERENCES conversations(id),
+            CONSTRAINT fk_user_id
+            FOREIGN KEY (user_id)
+            REFERENCES users(id))
+        """
+    ]
+
+    for command in commands:
+        db.execute(command)
     db.close()
 
 if __name__ == '__main__':
