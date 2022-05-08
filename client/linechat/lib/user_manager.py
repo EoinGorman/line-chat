@@ -1,8 +1,7 @@
 import requests
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0], '..', 'common'))
-import constants
+import lib.constants
 
 class UserManager:
     def __init__(username, password):
