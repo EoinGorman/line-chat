@@ -10,4 +10,4 @@ linechat.egg-info/entry_points.txt
 linechat.egg-info/requires.txt
 linechat.egg-info/top_level.txt
 linechat/lib/constants.py
-linechat/lib/user_manager.py
+linechat/lib/db_util.py

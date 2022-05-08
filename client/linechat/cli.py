@@ -4,6 +4,7 @@ import click
 import json
 
 import linechat.lib.constants as constants
+from linechat.lib.db_util import DbUtil
 
 @click.group
 def cli():
@@ -15,10 +16,13 @@ def cli():
 def signup(username, password):
     data = json.dumps({"username":username, "password":password})
     response = requests.put(f"http://localhost:{constants.SERVER_PORT}/user", data = data)
-    #response = requests.post(f"http://localhost:{constants.SERVER_PORT}/login", data = data})
     if response.status_code == 200:
+        db = DbUtil()
+        rows = db.select_user(username)
+        if rows == []:
+            db.insert_user(int(response.text), username, password)
+        db.set_logged_in(username, password)
         print("success")
-        #     add user to db, set logged_in flag as True
     else:
         print(response.text)
 
@@ -28,12 +32,20 @@ def signup(username, password):
 def login(username, password):
     data = json.dumps({"username":username, "password":password})
     response = requests.post(f"http://localhost:{constants.SERVER_PORT}/user", data = data)
-    #response = requests.post(f"http://localhost:{constants.SERVER_PORT}/login", data = data})
     if response.status_code == 200:
-        print(response.text)
-        #     add user to db, set logged_in flag as True
+        user_id = int(response.text)
+        db = DbUtil()
+        rows = db.select_user(username)
+        if rows == []:
+            db.insert_user(user_id, username)
+        db.set_logged_in(user_id)
+        print("success")
     else:
         print(response.text)
+
+@cli.command()
+def logged_in():
+    pass
 
 if __name__ == '__main__':
     cli()
