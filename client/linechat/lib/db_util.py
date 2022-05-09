@@ -25,14 +25,14 @@ class DbUtil:
         db_name = self.config()["database"]
         return sqlite3.connect(db_name)
 
-    def select_user(self, username):
-        self.execute(f"SELECT * FROM users WHERE username = '{username}'")
+    def select_user(self, field, value):
+        self.execute(f"SELECT * FROM users WHERE {field} = '{value}'")
         return self.cur.fetchall()
 
     def insert_user(self, user_id, username):
         self.execute(f"INSERT INTO users(id, username, signed_in) VALUES ('{user_id}', '{username}', 0)")
 
-    def set_logged_in(self, user_id):
+    def set_signed_in(self, user_id):
         self.execute(f"UPDATE users SET signed_in = 0 WHERE id != {user_id}")
         self.execute(f"UPDATE users SET signed_in = 1 WHERE id = {user_id}")
         return self.cur.fetchall()

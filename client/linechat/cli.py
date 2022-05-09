@@ -18,10 +18,10 @@ def signup(username, password):
     response = requests.put(f"http://localhost:{constants.SERVER_PORT}/user", data = data)
     if response.status_code == 200:
         db = DbUtil()
-        rows = db.select_user(username)
+        rows = db.select_user('username', username)
         if rows == []:
             db.insert_user(int(response.text), username, password)
-        db.set_logged_in(username, password)
+        db.set_signed_in(username, password)
         print("success")
     else:
         print(response.text)
@@ -35,17 +35,19 @@ def login(username, password):
     if response.status_code == 200:
         user_id = int(response.text)
         db = DbUtil()
-        rows = db.select_user(username)
+        rows = db.select_user('username', username)
         if rows == []:
             db.insert_user(user_id, username)
-        db.set_logged_in(user_id)
+        db.set_signed_in(user_id)
         print("success")
     else:
         print(response.text)
 
 @cli.command()
-def logged_in():
-    pass
+def signed_in():
+    db = DbUtil()
+    rows = db.select_user('signed_in', 1)
+    print(f"Currently signed in as {rows[0][1]}")
 
 if __name__ == '__main__':
     cli()
