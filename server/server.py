@@ -1,4 +1,5 @@
 import json
+from importlib_metadata import method_cache
 import requests
 import sys, os
 
@@ -6,6 +7,7 @@ from flask import Flask, jsonify, request, Response
 
 import lib.constants as constants
 from lib.user_manager import UserManager
+from lib.conversation_manager import ConversationManager
 
 app = Flask(__name__)
 
@@ -28,10 +30,17 @@ def user():
     else:
         return Response(f"{message}", status=400)
 
-@app.route('/conversations', methods= ['GET'])
+@app.route('/conversations', methods= ['GET', 'PUT'])
 def conversations():
-    # talk to db, get all messages for user for a conversation
-    return 'messages: '
+    conv_manager = ConversationManager()
+    if request.method == 'GET':
+        conversations = json.dumps(conv_manager.all_conversations(), default=str)
+        return Response(conversations, status=200)
+    elif request.method == 'PUT':
+        params = json.loads(request.get_data().decode("utf-8"))
+        conv_manager.add_conversation(params["conversation_name"], params["user_id"])
+        conversation = json.dumps(conv_manager.conversation(params["conversation_name"]), default=str)
+        return Response(conversation, 200)
 
 if __name__ == '__main__':
     app.run(port=constants.SERVER_PORT)

@@ -25,12 +25,13 @@ class DbUtil:
         params = self.config()
         return psycopg2.connect(**params)
 
-    def select_user(self, username):
-        self.execute(f"SELECT * FROM users WHERE username = '{username}'")
+    def select(self, table, field, value):
+        self.execute(f"SELECT * FROM {table} WHERE {field} = '{value}'")
         return self.cur.fetchall()
 
-    def insert_user(self, username, password):
-        self.execute(f"INSERT INTO users(username, password, created_at) VALUES ('{username}', '{password}', NOW())")
+    def select_all(self, table):
+        self.execute(f"SELECT * FROM {table}")
+        return self.cur.fetchall()
 
     def execute(self, command):
         self.cur.execute(command)

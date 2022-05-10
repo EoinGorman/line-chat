@@ -14,8 +14,12 @@ def init_db():
         """
         CREATE TABLE IF NOT EXISTS conversations (
             id serial PRIMARY KEY,
-            name VARCHAR(20) NOT NULL,
-            created_at TIMESTAMP NOT NULL)
+            name VARCHAR(20) UNIQUE NOT NULL,
+            user_id INT NOT NULL,
+            created_at TIMESTAMP NOT NULL,
+            CONSTRAINT fk_user_id
+            FOREIGN KEY (user_id)
+            REFERENCES users(id))
         """,
         """
         CREATE TABLE IF NOT EXISTS conversation_users (
