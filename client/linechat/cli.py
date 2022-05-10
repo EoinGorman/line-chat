@@ -1,3 +1,4 @@
+from urllib import response
 import requests
 
 import click
@@ -49,5 +50,27 @@ def signed_in():
     rows = db.select_user('signed_in', 1)
     print(f"Currently signed in as {rows[0][1]}")
 
+@cli.command()
+def conversations():
+    response = requests.get(f"http://localhost:{constants.SERVER_PORT}/conversations")
+    if response.status_code == 200:
+        print(f"<conversation_id>: <conversation_name>")
+        conversations = json.loads(response.text)
+        for conv in conversations:
+            print(f"{conv[0]}: {conv[1]}")
+
+
+@cli.command()
+@click.option("--name", "-n", "conversation_name", required=True, help="Name of conversation to create.")
+def create_conversation(conversation_name):
+    db = DbUtil()
+    user_id = db.select_user('signed_in', 1)[0][0]
+    data = json.dumps({"conversation_name":conversation_name, "user_id":user_id})
+    response = requests.put(f"http://localhost:{constants.SERVER_PORT}/conversations", data = data)
+    if response.status_code == 200:
+        print(f"Created {conversation_name} successfully.")
+    else:
+        print(f"Failed to create conversation: {conversation_name}.")
+
 if __name__ == '__main__':
-    cli()
+    conversations()
