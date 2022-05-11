@@ -5,7 +5,6 @@ import threading
 from python_sockets.client import HEADER
 
 class SocketConnection:
-    HEADER = 64
     PORT = 5050
     SERVER = socket.gethostbyname(socket.gethostname())
     ADDR = (SERVER, PORT)
