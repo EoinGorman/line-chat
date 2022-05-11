@@ -6,6 +6,7 @@ import json
 
 import linechat.lib.constants as constants
 from linechat.lib.db_util import DbUtil
+from linechat.lib.socket_connection import SocketConnection
 
 @click.group
 def cli():
@@ -71,6 +72,15 @@ def create_conversation(conversation_name):
         print(f"Created {conversation_name} successfully.")
     else:
         print(f"Failed to create conversation: {conversation_name}.")
+
+@cli.command()
+@click.option("--name", "-n", "conversation_name", required=True, help="Name of conversation to join.")
+def join_conversation(conversation_name):
+    db = DbUtil()
+    user_id = db.select_user('signed_in', 1)[0][0]
+    data = json.dumps({"conversation_name":conversation_name, "user_id":user_id})
+    socket_conn = SocketConnection()
+    socket_conn.connect()
 
 if __name__ == '__main__':
     conversations()

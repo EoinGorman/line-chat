@@ -30,7 +30,7 @@ def user():
     else:
         return Response(f"{message}", status=400)
 
-@app.route('/conversations', methods= ['GET', 'PUT'])
+@app.route('/conversations', methods= ['GET', 'PUT', 'POST'])
 def conversations():
     conv_manager = ConversationManager()
     if request.method == 'GET':
