@@ -1,4 +1,5 @@
 import socket
+import sys
 import threading
 
 from socket_client import SocketClient
@@ -61,5 +62,9 @@ class SocketConnection:
         self.close()
 
 if __name__ == '__main__':
-    sock = SocketConnection()
-    sock.start()
+    try:
+        sock = SocketConnection()
+        sock.start()
+    except KeyboardInterrupt:
+        sock.close()
+        sys.exit(0)
