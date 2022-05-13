@@ -1,0 +1,2 @@
+include linechat/linechat.db
+include linechat/lib/database.ini

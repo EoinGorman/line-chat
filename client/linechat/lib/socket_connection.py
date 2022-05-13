@@ -52,11 +52,3 @@ class SocketConnection:
     def __del__(self):
         print("deleting")
         self.close()
-
-if __name__ == '__main__':
-    try:
-        sock = SocketConnection()
-        sock.connect('miami')
-    except KeyboardInterrupt:
-        sock.close()
-        sys.exit(0)

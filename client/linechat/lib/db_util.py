@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from configparser import ConfigParser
@@ -7,9 +8,10 @@ class DbUtil:
         self.conn = self.connect()
         self.cur = self.conn.cursor()
 
-    def config(self, filename='./linechat/lib/database.ini', section='sqlite'):
+    def config(self, section='sqlite'):
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "database.ini")
         parser = ConfigParser()
-        parser.read(filename)
+        parser.read(file)
         db = {}
 
         if parser.has_section(section):
@@ -17,13 +19,14 @@ class DbUtil:
             for param in params:
                 db[param[0]] = param[1]
         else:
-            raise Exception(f'Section {section} not found in file {filename}')
+            raise Exception(f'Section {section} not found in file {file}')
 
         return db
 
     def connect(self):
         db_name = self.config()["database"]
-        return sqlite3.connect(db_name)
+        db_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", f"{db_name}")
+        return sqlite3.connect(db_file)
 
     def select_user(self, field, value):
         self.execute(f"SELECT * FROM users WHERE {field} = '{value}'")

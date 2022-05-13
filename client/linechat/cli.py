@@ -1,5 +1,6 @@
 from urllib import response
 import requests
+import sys
 
 import click
 import json
@@ -76,11 +77,25 @@ def create_conversation(conversation_name):
 @cli.command()
 @click.option("--name", "-n", "conversation_name", required=True, help="Name of conversation to join.")
 def join_conversation(conversation_name):
-    db = DbUtil()
-    user_id = db.select_user('signed_in', 1)[0][0]
-    data = json.dumps({"conversation_name":conversation_name, "user_id":user_id})
-    socket_conn = SocketConnection()
-    socket_conn.connect()
+    try:
+        response = requests.get(f"http://localhost:{constants.SERVER_PORT}/conversations")
+        if response.status_code == 200:
+            conversations = json.loads(response.text)
+            valid_conv = False
+            for conv in conversations:
+                if conversation_name == conv[1]:
+                    valid_conv = True
+
+            if valid_conv:
+                sock = SocketConnection()
+                sock.connect(conversation_name)
+            else:
+                print(f"{conversation_name} conversation does not exist.")
+        else:
+            print(f"Error contacting server for conversations list: {response.text}")
+    except KeyboardInterrupt:
+        sock.close()
+        sys.exit(0)
 
 if __name__ == '__main__':
-    conversations()
+    cli()

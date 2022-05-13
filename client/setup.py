@@ -7,5 +7,6 @@ setup(
         'console_scripts': [
             'linechat=linechat.cli:cli'
         ]
-    }
+    },
+    include_package_data=True
 )
