@@ -71,7 +71,9 @@ class SocketConnection:
         if self.connected:
             self.send_message(self.DISCONNECT_MESSAGE)
         self.connected = False
-        #todo delete /tmp file
+        # TODO delete /tmp file
+        # TODO stop all threads properly
+        # TODO kill opened terminal for convo
 
     def __del__(self):
         print("deleting")
