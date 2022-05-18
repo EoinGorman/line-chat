@@ -8,6 +8,7 @@ class SocketClient:
     def __init__(self, conn):
         self.connected = True
         self.socket = conn
+        self.user = None
         self.conversation = None
 
     def receive_message(self):
@@ -24,6 +25,12 @@ class SocketClient:
         send_length += b' ' * (self.HEADER - len(send_length))
         self.socket.send(send_length)
         self.socket.send(msg)
+
+    def get_user(self):
+        return self.conversation
+
+    def set_user(self, user):
+        self.user = user
 
     def get_conversation(self):
         return self.conversation

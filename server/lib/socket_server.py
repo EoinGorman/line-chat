@@ -29,7 +29,9 @@ class SocketConnection:
     def handle_client(self, conn, addr):
         print("Handling client")
         client = SocketClient(conn)
-        conv_name = client.receive_message() # First message will be conversation name to join
+        user_name = client.receive_message() # First message will be user name
+        client.set_user(user_name)
+        conv_name = client.receive_message() # Second message will be conversation name to join
         client.set_conversation(conv_name)
         print(f"[NEW CONNECTION] New user has joined {conv_name}")
 
@@ -42,20 +44,20 @@ class SocketConnection:
             if message == self.DISCONNECT_MESSAGE:
                 client.close()
             elif message:
-                self.broadcast_message(message, conv_name, client)
+                message = f"{user_name}: {message}"
+                self.broadcast_message(message, conv_name)
         print(f"[DISCONNECT] Removing {client} from {conv_name}")
         self.conversations[conv_name].remove(client)
 
-    def broadcast_message(self, message, conversation, sender):
+    def broadcast_message(self, message, conversation):
         print(f"[BROADCAST] Sending {message} to {conversation} chat.")
         for client in self.conversations[conversation]:
-            if client != sender:
-                print(f"[CLIENT] {client}")
-                client.send_message(message)
+            print(f"[CLIENT] {client}")
+            client.send_message(message)
 
     def close(self):
         for conversation in self.conversations:
-            self.broadcast_message(self.DISCONNECT_MESSAGE, conversation, None)
+            self.broadcast_message(self.DISCONNECT_MESSAGE, conversation)
         self.connected = False
 
     def __del__(self):

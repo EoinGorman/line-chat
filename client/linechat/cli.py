@@ -50,7 +50,7 @@ def login(username, password):
 def signed_in():
     db = DbUtil()
     rows = db.select_user('signed_in', 1)
-    print(f"Currently signed in as {rows[0][1]}")
+    print(f"Currently signed in as: {rows[0][1]}")
 
 @cli.command()
 def conversations():
@@ -87,8 +87,10 @@ def join_conversation(conversation_name):
                     valid_conv = True
 
             if valid_conv:
-                sock = SocketConnection()
-                sock.connect(conversation_name)
+                db = DbUtil()
+                user_name = db.select_user('signed_in', 1)[0][1]
+                sock = SocketConnection(user_name, conversation_name)
+                sock.connect()
             else:
                 print(f"{conversation_name} conversation does not exist.")
         else:
